@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{%block title %}Lista{%endblock%}</title>
+</head>
+<body>
+{%block content %}
+    <div class='content-wrapper'>
+        <div class='row'>
+            <div class='col-12'>
+                <div class="offset-1 col-10 list-div">
+                    <h1>Lista de Tarefas</h1>
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-12'> 
+                <div class='container dashboard'>
+                    <div class='col-4 dashboard-box' id='dashboard-lastdays'>
+                        <h4>Finalizadas nos últimos 30 dias</h4>
+                        <span>{{ tasks_done_recently }}</span>
+                    </div>
+                </div>
+                <div class='container dashboard'>
+                    <div class='col-4 dashboard-box' id='dashboard-done'>
+                        <h4>Tarefas Finalizadas</h4>
+                        <span>{{ tasks_done }}</span>
+                    </div>
+                </div>
+                <div class='container dashboard'>
+                    <div class='col-4 dashboard-box' id='dashboard-doing'>
+                        <h4>Tarefas Para Fazer</h4>
+                        <span>{{ tasks_doing }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id='add-search' >
+            <div class= "col-12">
+                <div class="row">
+                    <div class="col-2 ">
+                        <a id='add-link' href="newtask/" class="btn btn-primary" id='btn-add'>
+                            <i class="fas fa-plus"></i>Adicionar Tarefa
+                        </a>
+                    </div>
+                    <div class="flex-nowrap col-9">
+                        <form method="GET" id="search-form">
+                            <div class="input-group">
+                                <span class="input-group-text" id="addon-wrapping"><i class="fas fa-search" id="search-btn"></i></span>
+                                <input type="text" class="form-control" name="search" id="search" placeholder="Digite o nome da tarefa para buscar" value="{{ request.GET.search }}" aria-label="Username" aria-describedby="addon-wrapping">
+                            </div>
+                        </form>
+                    </div>
+        
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class="col-12 filter-div">
+                <span>Filtrar por:</span>
+                <select name="filter" id="filter" class="form-control">
+                    <option value="">Escolha uma opção</option>
+                    <option value="done">Tarefas Concluídas</option>
+                    <option value="doing">Tarefas em andamento</option>
+                    <option value="to do">Tarefas a fazer</option>
+                </select>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-12' id='table'>
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages%}
+                        <li {% if message.tags %}class="alert alert-{{message.tags}}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <th>Nome</th>
+                        <th style="width: 5px;">Deletar</th>
+                        <th style="width: 5px;">Editar</th>
+                        <th style="width: 5px;">Concluir</th>
+                    </thead>
+                    <tbody>
+                    {% for task in tasks %}
+                        <tr>
+                            <td><span><a href="/task/{{task.id}}" style="font-size: 20px; text-decoration: none; color: black;">{{task.title}}</a></span></td>
+                            <td><button type="button" class="btn text-primary p-2" data-bs-toggle="modal" data-bs-target="#delete-task{{task.id}}"><i class="fas fa-trash"></i></button></td>
+                            <td><a href="edittask/{{task.id}}"><span><i class="fas fa-edit"></i></span></a></td>
+                            {% if task.done == 'doing' or task.done == 'to do' %}
+                                <td><a href="changestatus/{{task.id}}" style="color: #ccc;"><span><i class="fas fa-check"></i></span></a></td>
+                            {% else %}
+                                <td><a href="changestatus/{{task.id}}" style="color: #3476e2;"><span><i class="fas fa-check"></i></span></a></td>
+                            {% endif %}
+                        </tr>
+
+                    <!-- Modal Deletar -->
+                    <div class="modal fade" id="delete-task{{task.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmar Exclusão</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Confirmar exclusão de {{task.title}}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <a href="deletetask/{{task.id}}" class="btn btn-danger">Deletar</a>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                    <!--End Modal-->
+
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+        <div class='row'>
+            <div class='col-12'>
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if tasks.has_previous %}
+                            <a href="?page={{ tasks.previous_page_number }}"><i class="fas fa-arrow-left"></i></a>
+                        {% endif %}
+                        {% if tasks.paginator.num_pages %}
+                            <span class="current">
+                                {{ tasks.number }} de {{ tasks.paginator.num_pages }}
+                            </span>
+                        {% endif %}
+
+                        {% if tasks.has_next %}
+                            <a href="?page={{ tasks.next_page_number }}"><i class="fas fa-arrow-right"></i></a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+</body>
+</html>

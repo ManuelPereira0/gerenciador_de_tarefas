@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    {% extends 'base.html' %}
+    {% load crispy_forms_tags %}
+    <meta charset="UTF-8">
+    <title>{%block title %}Editar '{{task.title}}'{%endblock%}</title>
+</head>
+<body>
+    {%block content %}
+    <div class="offset-1 col-10 list-div">
+        <h1>Editar '{{task.title}}'</h1>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" class="btn btn-success" value="Editar Tarefa">
+        </form>
+    </div>
+    {% endblock %}
+</body>
+</html>

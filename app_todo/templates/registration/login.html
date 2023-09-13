@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    {% extends 'base.html' %}
+    {% load crispy_forms_tags %}
+    <meta charset="UTF-8">
+    <title>{%block title %}Entrar no To Do List{%endblock%}</title>
+</head>
+<body>
+    {%block content %}
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+                <div class="card auth-card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Entrar no To Do List</h4>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ next }}">
+                            {{ form|crispy }}
+                            <div class="d-grid gap-2 col-12 mx-auto">
+                                <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+                            </div>
+                        </form>
+                        <p class="change-form-p">Quer criar uma conta? <a href="/accounts/register">Clique aqui!</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+</body>
+</html>

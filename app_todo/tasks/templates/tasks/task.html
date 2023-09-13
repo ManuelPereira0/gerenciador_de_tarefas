@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{%block title %}Tarefa{%endblock%}</title>
+</head>
+<body>
+    {%block content %}
+    <div class="offset-1 col-10 list-div">
+        <h1>{{task.title}}</h1>
+        <p>{{task.description}}</p>
+    </div>
+    {% endblock %}
+</body>
+</html>
